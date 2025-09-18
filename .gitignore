@@ -1,0 +1,8 @@
+.cache
+MDK-ARM/DebugConfig/
+MDK-ARM/kuromi_fft/
+MDK-ARM/RTE/
+MDK-ARM/build.log
+MDK-ARM/build.log.lock
+MDK-ARM/EventRecorderStub.scvd
+MDK-ARM/kuromi_fft.uvguix.dazui

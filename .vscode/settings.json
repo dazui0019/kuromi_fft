@@ -1,0 +1,50 @@
+{
+    "editor.fontSize": 16,
+    "editor.fontFamily": "'Cascadia Mono', Consolas, 'Courier New', monospace",
+    "actionButtons": {
+        "commands": [
+            {
+                "cwd": "${workspaceFolder}",
+                "name": "\ud83e\udd79Rebuild",
+                "color": "white",
+                "singleInstance": true,
+                "saveAll": true,
+                "command": "tools/Uv4Caller.exe -o ${workspaceFolder}/MDK-ARM/build.log -c 'UV4 -r ${workspaceFolder}/MDK-ARM/kuromi_fft.uvprojx -j0'"
+            },
+            {
+                "cwd": "${workspaceFolder}",
+                "name": "\ud83e\udd70Flash",
+                "color": "white",
+                "singleInstance": true,
+                "command": "tools/Uv4Caller.exe -o ${workspaceFolder}/MDK-ARM/build.log -c 'UV4 -f ${workspaceFolder}/MDK-ARM/kuromi_fft.uvprojx -j0'"
+            },
+            {
+                "cwd": "${workspaceFolder}",
+                "name": "\ud83d\udc25Keil",
+                "color": "white",
+                "singleInstance": true,
+                "command": "UV4 ${workspaceFolder}/MDK-ARM/kuromi_fft.uvprojx"
+            },
+            {
+                "cwd": "${workspaceFolder}",
+                "name": "\ud83e\udd14RTT",
+                "color": "white",
+                "singleInstance": true,
+                "command": "openocd -f tools/openocd_daplink.cfg -f tools/openocd_rtt.cfg & telnet localhost 8888"
+            },
+            {
+                "cwd": "${workspaceFolder}",
+                "name": "🥶clangd",
+                "color": "white",
+                "singleInstance": true,
+                "command": "tools/uvConvertor-CLI.exe -f MDK-ARM/kuromi_fft.uvprojx -o ."
+            }
+        ],
+        "defaultColor": "white",
+        "reloadButton": "\ud83e\udee1",
+        "loadNpmCommands": false
+    },
+    "cmake.ignoreCMakeListsMissing": true,
+    "clangd.path": "D:\\Program Files\\LLVM\\bin\\clangd.exe",
+    "clangd.onConfigChanged": "restart"
+}
