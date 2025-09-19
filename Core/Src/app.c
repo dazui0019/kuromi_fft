@@ -6,8 +6,9 @@
 #include "ws28xx.h"
 #include "i2s.h" // IWYU pragma: keep
 #include <stdint.h>
+#include "u8g2.h"
 
-#define MAX_LED_COUNT 16
+#define MAX_LED_COUNT 45
 
 #define FFT_SIZE 1024
 
@@ -28,6 +29,8 @@ WS28XX_HandleTypeDef hLed;
 uint16_t I2S_Buffer[2*4*FFT_SIZE];    // 一个周期的数据需要4个元素来存储, 包含左右声道. 然后使用了一个乒乓缓冲区
 
 int32_t val_24bit = 0;
+
+u8g2_t u8g2;
 
 void setup(void)
 {
