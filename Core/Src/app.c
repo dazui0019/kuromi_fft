@@ -1,4 +1,5 @@
 #include "main.h"   // IWYU pragma: keep
+#include "stm32f4xx_hal_i2c.h"
 #include "stm32f4xx_hal_i2s.h"
 #include "tim.h"
 #include "arm_math.h"
@@ -7,6 +8,7 @@
 #include "i2s.h" // IWYU pragma: keep
 #include <stdint.h>
 #include "u8g2.h"
+#include "i2c.h"
 
 #define MAX_LED_COUNT 45
 
@@ -14,6 +16,8 @@
 
 void vol2led();
 void print_max_freq();
+uint8_t u8x8_byte_stm32_hw_i2c(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *arg_ptr);
+uint8_t u8x8_stm32_gpio_and_delay(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *arg_ptr);
 
 // i2s传输完成标志
 __IO uint8_t i2s_cplt_flag = 0;
@@ -163,6 +167,65 @@ void print_max_freq()
     float32_t freq = max_bin * sampling_frequency / FFT_SIZE;
 
     printf("Freq: %.2f Hz\n", freq);
+}
+
+uint8_t u8x8_stm32_gpio_and_delay(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *arg_ptr)
+{
+    /* STM32 supports HW SPI, Remove unused cases like U8X8_MSG_DELAY_XXX & U8X8_MSG_GPIO_XXX */
+    switch(msg){
+    case U8X8_MSG_GPIO_AND_DELAY_INIT:
+        /* Insert codes for initialization */
+        break;
+    case U8X8_MSG_DELAY_MILLI:
+        /* ms Delay */
+        HAL_Delay(arg_int);
+        break;
+    case U8X8_MSG_GPIO_CS:
+        /* Insert codes for SS pin control */
+        break;
+    case U8X8_MSG_GPIO_DC:
+        /* Insert codes for DC pin control */
+        break;
+    case U8X8_MSG_GPIO_RESET:
+        /* Insert codes for RST pin control */
+        break;
+    }
+    return 1;
+}
+
+uint8_t u8x8_byte_stm32_hw_i2c(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *arg_ptr)
+{
+    /* u8g2/u8x8 will never send more than 32 bytes between START_TRANSFER and END_TRANSFER */
+    static uint8_t buffer[32];
+    static uint8_t buf_idx;
+    uint8_t *data;
+
+    switch(msg)
+    {
+    case U8X8_MSG_BYTE_SEND:
+        data = (uint8_t *)arg_ptr;
+        while( arg_int > 0 )
+        {
+            buffer[buf_idx++] = *data;
+            data++;
+            arg_int--;
+        }
+        break;
+    case U8X8_MSG_BYTE_INIT:
+        /* add your custom code to init i2c subsystem */
+        break;
+    case U8X8_MSG_BYTE_SET_DC:
+        break;
+    case U8X8_MSG_BYTE_START_TRANSFER:
+        buf_idx = 0;
+        break;
+    case U8X8_MSG_BYTE_END_TRANSFER:
+        if(HAL_I2C_Master_Transmit(&hi2c1, (0x78 << 1), buffer, buf_idx, 100) != HAL_OK) return 0;
+        break;
+    default:
+        return 0;
+    }
+    return 1;
 }
 
 void HAL_I2S_RxHalfCpltCallback(I2S_HandleTypeDef *hi2s)

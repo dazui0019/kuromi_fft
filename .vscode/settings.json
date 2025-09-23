@@ -45,6 +45,6 @@
         "loadNpmCommands": false
     },
     "cmake.ignoreCMakeListsMissing": true,
-    "clangd.path": "D:\\Program Files\\LLVM\\bin\\clangd.exe",
+    "clangd.path": "D:\\Toolchain\\clang+llvm\\bin\\clangd.exe",
     "clangd.onConfigChanged": "restart"
 }
